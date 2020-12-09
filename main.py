@@ -14,6 +14,7 @@ OPERATORS_LOG = {
 
 OPERATORS = OPERATORS_LOG
 
+
 # OPERATORS = {'+': (1, lambda x, y: x + y), '-': (1, lambda x, y: x - y),
 #              '*': (2, lambda x, y: x * y), '/': (2, lambda x, y: x / y)}
 
@@ -68,9 +69,18 @@ def eval_(formula):
 def print_hi(name):
     x = 1
     y = 0
-    print(eval_(f"!{x} | {y}"))
+    print(eval_(f"{x} - {y}"))
     # print(1 and 0)
+    str_to_fstr("sss",1,2,3,4,5)
 
+
+def str_to_fstr(str, *args):
+    s = "asas a"
+    a =5
+    ss = s.replace(' a',' $a')
+    print(s)
+    print(ss)
+    pass
 
 if __name__ == '__main__':
     print_hi('PyCharm')

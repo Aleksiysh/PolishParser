@@ -1,24 +1,31 @@
-from string import Template
-
-OPERATORS_MATH = {'+': (1, lambda x, y: x + y), '-': (1, lambda x, y: x - y),
-                  '*': (2, lambda x, y: x * y), '/': (2, lambda x, y: x / y),
-                  '~': (3, lambda x: -x),
-                  }
+# OPERATORS_MATH = {'+': (1, lambda x, y: x + y), '-': (1, lambda x, y: x - y),
+#                   '*': (2, lambda x, y: x * y), '/': (2, lambda x, y: x / y),
+#                   '~': (3, lambda x: -x), '^': (3, lambda x, y: x ** y),
+#                   }
 
 OPERATORS_LOG = {
-    '!': (1, lambda x: 1 - x),
-    '&': (2, lambda x, y: x if x < y else y),
-    '|': (3, lambda x, y: x if x > y else y),
-    '^': (3, lambda x, y: None),
+    '!': (1, lambda x: inv(x)),
+    '&': (2, lambda x, y: conj(x, y)),
+    '|': (3, lambda x, y: disj(x, y)),
+    '^': (3, lambda x, y: disj(conj(inv(x), y), conj(x, inv(y)))),
     '-': (4, lambda x, y: 1 if 1 < 1 - x + y else 1 - x + y),
-    '=': (4, lambda x, y: None)
+    '=': (4, lambda x, y: disj(conj(inv(x), y), conj(x, inv(y))))
 }
 
+
+def inv(x):
+    return 1 - x
+
+
+def conj(x, y):
+    return x if x < y else y
+
+
+def disj(x, y):
+    return x if x > y else y
+
+
 OPERATORS = OPERATORS_LOG
-
-
-# OPERATORS = {'+': (1, lambda x, y: x + y), '-': (1, lambda x, y: x - y),
-#              '*': (2, lambda x, y: x * y), '/': (2, lambda x, y: x / y)}
 
 
 def eval_(formula):
@@ -59,8 +66,12 @@ def eval_(formula):
         stack = []
         for token in polish:
             if token in OPERATORS:
-                y, x = stack.pop(), stack.pop()
-                stack.append(OPERATORS[token][1](x, y))
+                if token in ('!', '~'):
+                    x = stack.pop()
+                    stack.append(OPERATORS[token][1](x))
+                else:
+                    y, x = stack.pop(), stack.pop()
+                    stack.append(OPERATORS[token][1](x, y))
             else:
                 stack.append(token)
         return stack[0]
@@ -68,24 +79,53 @@ def eval_(formula):
     return calc(shunting_yard(parse(formula)))
 
 
-def print_hi(name):
-    x = 1
-    y = 0
-    print(eval_(f"{x} - {y}"))
-    # print(1 and 0)
-    str_to_fstr("sss", 1, 2, 3, 4, 5)
+def main():
+    log = '''Список операций (в скобках как записывать):
+! инверсия (!a);
+& конъюнкция (a&b);
+| дизъюнкция (a|b);
+^ строгая дизъюнкция (a^b);
+- импликация a->b (a-b);
+= эквивиаленция a<->b (a=b);
+() скобки
+'''
+
+    print(log)
+
+    arr = []
+
+    n = int(input("Количество аргументов: "))
+    q = int(input("Система счисления: "))
+    str1 = input("функция: ")
+
+    for i in range(q ** n):
+        a = convert_base(i, q, 10).zfill(n)
+        arr.append(a)
+
+    for aaa in arr:
+        print(aaa, end=' ')
+        print(int(eval_(str_to_fstr(str1, *aaa))))
 
 
-def str_to_fstr(str, *args):
-    s = "asas a"
-    a =5
-    ss = s.replace(' a', ' {a}')
-    sss = f"{ss}"
-    print(sss.format(a=a))
-    # print(s)
-    # print(ss)
-    pass
+def str_to_fstr(str1, *args):
+    for i in range(5):
+        str1 = str1.replace(chr(ord('a') + i), '{' + str(i) + '}')
+    return str1.format(*args)
+
+
+def convert_base(num, to_base=10, from_base=10):
+    # first convert to decimal number
+    if isinstance(num, str):
+        n = int(num, from_base)
+    else:
+        n = int(num)
+    # now convert decimal to 'to_base' base
+    alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    if n < to_base:
+        return alphabet[n]
+    else:
+        return convert_base(n // to_base, to_base) + alphabet[n % to_base]
 
 
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    main()

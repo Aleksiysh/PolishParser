@@ -1,10 +1,12 @@
+from string import Template
+
 OPERATORS_MATH = {'+': (1, lambda x, y: x + y), '-': (1, lambda x, y: x - y),
                   '*': (2, lambda x, y: x * y), '/': (2, lambda x, y: x / y),
                   '~': (3, lambda x: -x),
                   }
 
 OPERATORS_LOG = {
-    '-': (1, lambda x: 1 - x),
+    '!': (1, lambda x: 1 - x),
     '&': (2, lambda x, y: x if x < y else y),
     '|': (3, lambda x, y: x if x > y else y),
     '^': (3, lambda x, y: None),
@@ -71,16 +73,19 @@ def print_hi(name):
     y = 0
     print(eval_(f"{x} - {y}"))
     # print(1 and 0)
-    str_to_fstr("sss",1,2,3,4,5)
+    str_to_fstr("sss", 1, 2, 3, 4, 5)
 
 
 def str_to_fstr(str, *args):
     s = "asas a"
     a =5
-    ss = s.replace(' a',' $a')
-    print(s)
-    print(ss)
+    ss = s.replace(' a', ' {a}')
+    sss = f"{ss}"
+    print(sss.format(a=a))
+    # print(s)
+    # print(ss)
     pass
+
 
 if __name__ == '__main__':
     print_hi('PyCharm')

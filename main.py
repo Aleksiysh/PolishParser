@@ -89,19 +89,14 @@ def main():
 = эквивиаленция a<->b (a=b);
 () скобки
 '''
-
     print(log)
-
     arr = []
-
     n = int(input("Количество аргументов: "))
     q = int(input("Система счисления: "))
     str1 = input("функция: ")
-
     for i in range(q ** n):
         a = convert_base(i, q, 10).zfill(n)
         arr.append(a)
-
     for aaa in arr:
         print(aaa, end=' ')
         print(int(eval_(str_to_fstr(str1, *aaa))))
